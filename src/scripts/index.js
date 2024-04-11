@@ -1,3 +1,7 @@
+import '../pages/index.css';
+
+import initialCards from './cards';
+
 // @todo: Темплейт карточки
 const cardTemplete = document.querySelector("#card-template").content;
 
@@ -16,7 +20,7 @@ function createCardElement(card, deleteCard) {
     cardTitle.textContent = card.name;
   
     const cardDeleteButton = cardElement.querySelector(".card__delete-button");
-    cardDeleteButton.addEventListener("click", () => deleteCard(cardElement)); // Поняла. Спасибо :)
+    cardDeleteButton.addEventListener("click", () => deleteCard(cardElement));
   
     return cardElement;
   }
