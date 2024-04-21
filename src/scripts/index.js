@@ -47,6 +47,7 @@ const cardModalCaptoion = document.querySelector(".popup__caption");
 function handleImageClick(cardElement) {
   const cardImage = cardElement.querySelector(".card__image");
   cardModalImage.src = cardImage.src;
+  cardModalImage.alt = cardImage.alt;
 
   const cardTitle = cardElement.querySelector(".card__title");
   cardModalCaptoion.textContent = cardTitle.textContent;
