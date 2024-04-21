@@ -12,30 +12,47 @@ const editProfileButton = document.querySelector(".profile__edit-button");
 const cardsList = document.querySelector(".places__list");
 const addCardButton = document.querySelector(".profile__add-button");
 
+// Общие элементы модальных окон
+const closeModalButtons = document.querySelectorAll(".popup__close");
+
 // Элементы модального окна редактирования профиля
 const profileModal = document.querySelector(".popup_type_edit");
-const closeProfileModalButton = document.querySelector(".popup_type_edit .popup__close");
-const profileForm = document.querySelector(".popup_type_edit .popup__form");
-const profileFormName = document.querySelector(".popup__input_type_name");
-const profileFormDescription = document.querySelector(".popup__input_type_description");
+const profileForm = document.forms["edit-profile"];
+const profileFormName = profileForm.elements["name"];
+const profileFormDescription = profileForm.elements["description"];
 
 // Элементы модального окна добавления карточки
 const newCardModal = document.querySelector(".popup_type_new-card");
-const closeNewCardModalButton = document.querySelector(".popup_type_new-card .popup__close");
-const newCardForm = document.querySelector(".popup_type_new-card .popup__form");
-const newCardFormImageName = document.querySelector(".popup__input_type_card-name");
-const newCardFormImageUrl = document.querySelector(".popup__input_type_url");
+const newCardForm = document.forms["new-place"];
+const newCardFormImageName = newCardForm.elements["place-name"];
+const newCardFormImageUrl = newCardForm.elements["link"];
 
 // Элементы модального окна просмотра карточки
 const cardModal = document.querySelector(".popup_type_image");
-const closeCardModalButton = document.querySelector(".popup_type_image .popup__close");
+const cardModalImage = document.querySelector(".popup__image");
+const cardModalCaptoion = document.querySelector(".popup__caption");
 
 (function showCards() {
   initialCards.forEach((card) => {
-    const cardElement = createCard(card, deleteCard, likeCard);
+    const cardElement = createCard(
+      card,
+      deleteCard,
+      likeCard,
+      handleImageClick
+    );
     cardsList.append(cardElement);
   });
 })();
+
+function handleImageClick(cardElement) {
+  const cardImage = cardElement.querySelector(".card__image");
+  cardModalImage.src = cardImage.src;
+
+  const cardTitle = cardElement.querySelector(".card__title");
+  cardModalCaptoion.textContent = cardTitle.textContent;
+
+  openModal(cardModal);
+}
 
 // Слушатель кнопки редактирования профиля
 editProfileButton.addEventListener("click", () => {
@@ -46,10 +63,7 @@ editProfileButton.addEventListener("click", () => {
 const setProfileData = () => {
   profileFormName.value = profileTitle.textContent;
   profileFormDescription.value = profileDescription.textContent;
-}
-
-// Слушатели модального окна редактирования профиля
-closeProfileModalButton.addEventListener("click", () => closeModal(profileModal));
+};
 
 // Слушатель отправки данных формы редактирования профиля
 profileForm.addEventListener("submit", handleProfileFormSubmit);
@@ -64,12 +78,10 @@ function handleProfileFormSubmit(event) {
 const submitProfileForm = () => {
   profileTitle.textContent = profileFormName.value;
   profileDescription.textContent = profileFormDescription.value;
-}
+};
 
 // Слушатель кнопки добавления карточки
 addCardButton.addEventListener("click", () => openModal(newCardModal));
-
-closeNewCardModalButton.addEventListener("click", () => closeModal(newCardModal));
 
 newCardForm.addEventListener("submit", handleNewCardFormSubmit);
 
@@ -84,12 +96,15 @@ const submitNewCardForm = () => {
   const card = {
     name: newCardFormImageName.value,
     link: newCardFormImageUrl.value,
-  }
-  const cardElement = createCard(card, deleteCard, likeCard);
+  };
+  const cardElement = createCard(card, deleteCard, likeCard, handleImageClick);
   cardsList.prepend(cardElement);
-}
+};
 
-closeCardModalButton.addEventListener("click", () => closeModal(cardModal));
+closeModalButtons.forEach((closeButton) => {
+  const modal = closeButton.closest(".popup");
+  closeButton.addEventListener("click", () => closeModal(modal));
+});
 
 // Функции работы с формами
 const resetForm = (form) => {
