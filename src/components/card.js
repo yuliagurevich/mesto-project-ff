@@ -1,42 +1,38 @@
-// Темплейт карточки
+import { openModal } from './modal.js';
+
 const cardTemplete = document.querySelector("#card-template").content;
 
-// Элементы DOM
-const modalImage = document.querySelector(".popup__image");
-const cardPopup = document.querySelector(".popup_type_image");
-const closeCardPopupButton = document.querySelector(
-  ".popup_type_image .popup__close"
-);
-const modalImageCaptoion = document.querySelector(".popup__caption");
+const cardModal = document.querySelector(".popup_type_image");
+const cardModalImage = document.querySelector(".popup__image");
+const cardModalCaptoion = document.querySelector(".popup__caption");
 
-// Функция создания карточки
-const createCard = (card, deleteCard, openModal) => {
+const createCard = (card, deleteCard, likeCard) => {
   const cardElement = cardTemplete.querySelector(".card").cloneNode(true);
-  
   setCardImage(cardElement, card);
   setCardTitle(cardElement, card);
-
-  const cardDeleteButton = cardElement.querySelector(".card__delete-button");
-  const likeIcon = cardElement.querySelector(".card__like-button");
-  const cardImage = selectCardImage(cardElement);
-
   cardElement.addEventListener("click", (event) => {
-    if (event.target === cardDeleteButton) {
+    if (event.target === selectCardDeleteButton(cardElement)) {
       deleteCard(cardElement);
-    } else if (event.target === likeIcon) {
-      likeCard(likeIcon);
-    } else if (event.target === cardImage) {
-      setModalImage(cardElement);
-      setModalCaption(cardElement);
-      openModal(cardPopup, closeCardPopupButton);
+    } else if (event.target === selectCardLikeIcon(cardElement)) {
+      likeCard(cardElement);
+    } else if (event.target === selectCardImage(cardElement)) {
+      setCardModalImage(cardElement);
+      setCardModalCaption(cardElement);
+      openModal(cardModal);
     }
   });
 
   return cardElement;
 };
 
-const selectCardImage = (cardElement) => cardElement.querySelector(".card__image");
-const selectCardTitle = (cardElement) => cardElement.querySelector(".card__title");
+const deleteCard = (cardElement) => {
+  cardElement.remove();
+};
+
+const likeCard = (cardElement) => {
+  const likeIcon = selectCardLikeIcon(cardElement);
+  likeIcon.classList.toggle("card__like-button_is-active");
+};
 
 const setCardImage = (cardElement, card) => {
   const cardImage = selectCardImage(cardElement);
@@ -49,18 +45,19 @@ const setCardTitle = (cardElement, card) => {
   cardTitle.textContent = card.name;
 };
 
-const setModalImage = (cardElement) => {
+const setCardModalImage = (cardElement) => {
   const cardImage = selectCardImage(cardElement);
-  modalImage.src = cardImage.src;
+  cardModalImage.src = cardImage.src;
 };
 
-const setModalCaption = (cardElement) => {
+const setCardModalCaption = (cardElement) => {
   const cardTitle = selectCardTitle(cardElement);
-  modalImageCaptoion.textContent = cardTitle.textContent;
+  cardModalCaptoion.textContent = cardTitle.textContent;
 };
 
-const likeCard = (likeIcon) => {
-  likeIcon.classList.toggle('card__like-button_is-active');
-};
+const selectCardImage = (cardElement) => cardElement.querySelector(".card__image");
+const selectCardTitle = (cardElement) => cardElement.querySelector(".card__title");
+const selectCardDeleteButton = (cardElement) => cardElement.querySelector(".card__delete-button");
+const selectCardLikeIcon = (cardElement) => cardElement.querySelector(".card__like-button");
 
-export { createCard };
+export { createCard, deleteCard, likeCard };
